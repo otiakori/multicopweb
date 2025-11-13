@@ -4,12 +4,27 @@
 @section('subtitle', 'Write a new blog article')
 
 @push('styles')
-<!-- TinyMCE -->
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<!-- Quill.js -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
 <style>
-    .tox .tox-editor-header {
+    .ql-toolbar {
+        border-radius: 0.375rem 0.375rem 0 0;
+        border: 1px solid #d1d5db;
+        border-bottom: none;
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .ql-container {
+        border-radius: 0 0 0.375rem 0.375rem;
+        border: 1px solid #d1d5db;
+        min-height: 400px;
+    }
+
+    .ql-editor {
+        font-family: Inter, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
     }
 
     .category-tag {
@@ -22,6 +37,8 @@
         border-radius: 0.375rem;
         font-size: 0.875rem;
         font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
     }
 
     .category-tag.selected {
@@ -121,7 +138,12 @@
                 <p class="mt-1 text-sm text-gray-600">Write your blog post content</p>
             </div>
             <div class="p-6">
-                <textarea name="content" id="content" class="w-full">{{ old('content') }}</textarea>
+                <div id="editor-container" class="w-full">
+                    <div id="editor" class="w-full">
+                        {!! old('content', '') !!}
+                    </div>
+                    <textarea name="content" id="content" style="display: none;"></textarea>
+                </div>
                 @error('content')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
@@ -161,18 +183,34 @@
                     <p class="mt-1 text-sm text-gray-600">Select relevant categories</p>
                 </div>
                 <div class="p-6">
-                    <div class="space-y-3">
-                        @foreach($categories as $category)
-                            <label class="flex items-center">
-                                <input type="checkbox" name="categories[]" value="{{ $category->id }}"
-                                       {{ in_array($category->id, old('categories', [])) ? 'checked' : '' }}
-                                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
-                                <span class="ml-3 text-sm text-gray-700">{{ $category->name }}</span>
-                            </label>
+                    <!-- Hidden inputs for selected categories -->
+                    <div id="selected-categories" class="mb-4">
+                        @foreach(old('categories', []) as $categoryId)
+                            @php $category = $categories->find($categoryId) @endphp
+                            @if($category)
+                                <input type="hidden" name="categories[]" value="{{ $categoryId }}">
+                                <span class="category-tag selected" onclick="toggleCategory({{ $categoryId }}, '{{ $category->name }}')">
+                                    {{ $category->name }}
+                                    <span class="ml-1">×</span>
+                                </span>
+                            @endif
                         @endforeach
-                        @if($categories->isEmpty())
-                            <p class="text-sm text-gray-500">No categories available. <a href="#" class="text-red-600 hover:text-red-800">Create one first</a></p>
-                        @endif
+                    </div>
+
+                    <!-- Available categories -->
+                    <div class="mb-4">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Available Categories:</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($categories as $category)
+                                <span class="category-tag {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}"
+                                      onclick="toggleCategory({{ $category->id }}, '{{ $category->name }}')">
+                                    {{ $category->name }}
+                                </span>
+                            @endforeach
+                            @if($categories->isEmpty())
+                                <p class="text-sm text-gray-500">No categories available. <a href="#" class="text-red-600 hover:text-red-800">Create one first</a></p>
+                            @endif
+                        </div>
                     </div>
                     @error('categories')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -187,18 +225,34 @@
                     <p class="mt-1 text-sm text-gray-600">Add relevant tags</p>
                 </div>
                 <div class="p-6">
-                    <div class="space-y-3">
-                        @foreach($tags as $tag)
-                            <label class="flex items-center">
-                                <input type="checkbox" name="tags[]" value="{{ $tag->id }}"
-                                       {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}
-                                       class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
-                                <span class="ml-3 text-sm text-gray-700">{{ $tag->name }}</span>
-                            </label>
+                    <!-- Hidden inputs for selected tags -->
+                    <div id="selected-tags" class="mb-4">
+                        @foreach(old('tags', []) as $tagId)
+                            @php $tag = $tags->find($tagId) @endphp
+                            @if($tag)
+                                <input type="hidden" name="tags[]" value="{{ $tagId }}">
+                                <span class="tag-chip selected" onclick="toggleTag({{ $tagId }}, '{{ $tag->name }}')">
+                                    {{ $tag->name }}
+                                    <span class="ml-1">×</span>
+                                </span>
+                            @endif
                         @endforeach
-                        @if($tags->isEmpty())
-                            <p class="text-sm text-gray-500">No tags available. <a href="#" class="text-red-600 hover:text-red-800">Create some first</a></p>
-                        @endif
+                    </div>
+
+                    <!-- Available tags -->
+                    <div class="mb-4">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Available Tags:</p>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($tags as $tag)
+                                <span class="tag-chip {{ in_array($tag->id, old('tags', [])) ? 'selected' : '' }}"
+                                      onclick="toggleTag({{ $tag->id }}, '{{ $tag->name }}')">
+                                    {{ $tag->name }}
+                                </span>
+                            @endforeach
+                            @if($tags->isEmpty())
+                                <p class="text-sm text-gray-500">No tags available. <a href="#" class="text-red-600 hover:text-red-800">Create some first</a></p>
+                            @endif
+                        </div>
                     </div>
                     @error('tags')
                         <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -310,23 +364,99 @@ document.getElementById('featured_image').addEventListener('change', function(e)
     }
 });
 
-// Initialize TinyMCE
-tinymce.init({
-    selector: '#content',
-    height: 500,
-    menubar: false,
-    plugins: [
-        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-        'insertdatetime', 'media', 'table', 'help', 'wordcount'
-    ],
-    toolbar: 'undo redo | blocks | ' +
-        'bold italic backcolor | alignleft aligncenter ' +
-        'alignright alignjustify | bullist numlist outdent indent | ' +
-        'removeformat | help',
-    content_style: 'body { font-family:Inter,Helvetica,Arial,sans-serif; font-size:14px }',
-    skin: 'oxide',
-    content_css: false
+// Initialize Quill.js
+const quill = new Quill('#editor', {
+    theme: 'snow',
+    placeholder: 'Write your blog post content here...',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video'],
+            ['clean']
+        ]
+    }
 });
+
+// Category and Tag selection functions
+function toggleCategory(id, name) {
+    const selectedContainer = document.getElementById('selected-categories');
+    const existingInput = selectedContainer.querySelector(`input[value="${id}"]`);
+
+    if (existingInput) {
+        // Remove category
+        existingInput.parentElement.remove();
+    } else {
+        // Add category
+        const categoryTag = document.createElement('span');
+        categoryTag.className = 'category-tag selected';
+        categoryTag.onclick = () => toggleCategory(id, name);
+        categoryTag.innerHTML = `${name}<span class="ml-1">×</span>`;
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'categories[]';
+        hiddenInput.value = id;
+
+        categoryTag.appendChild(hiddenInput);
+        selectedContainer.appendChild(categoryTag);
+    }
+
+    // Update visual state of available categories
+    const availableTags = document.querySelectorAll('.category-tag:not(.selected)');
+    availableTags.forEach(tag => {
+        if (tag.textContent.trim() === name) {
+            tag.classList.toggle('selected');
+        }
+    });
+}
+
+function toggleTag(id, name) {
+    const selectedContainer = document.getElementById('selected-tags');
+    const existingInput = selectedContainer.querySelector(`input[value="${id}"]`);
+
+    if (existingInput) {
+        // Remove tag
+        existingInput.parentElement.remove();
+    } else {
+        // Add tag
+        const tagChip = document.createElement('span');
+        tagChip.className = 'tag-chip selected';
+        tagChip.onclick = () => toggleTag(id, name);
+        tagChip.innerHTML = `${name}<span class="ml-1">×</span>`;
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'tags[]';
+        hiddenInput.value = id;
+
+        tagChip.appendChild(hiddenInput);
+        selectedContainer.appendChild(tagChip);
+    }
+
+    // Update visual state of available tags
+    const availableChips = document.querySelectorAll('.tag-chip:not(.selected)');
+    availableChips.forEach(chip => {
+        if (chip.textContent.trim() === name) {
+            chip.classList.toggle('selected');
+        }
+    });
+}
+
+// Update form submission to get content from Quill
+document.querySelector('form').addEventListener('submit', function(e) {
+    document.querySelector('#content').value = quill.root.innerHTML;
+});
+
+// Load Quill.js
+const script = document.createElement('script');
+script.src = 'https://cdn.quilljs.com/1.3.6/quill.js';
+document.head.appendChild(script);
 </script>
 @endpush

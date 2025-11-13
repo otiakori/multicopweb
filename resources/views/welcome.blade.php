@@ -154,10 +154,11 @@
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Dashboard</a>
+                    <a href="#home" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Home</a>
                     <a href="#services" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Services</a>
                     <a href="#products" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Products</a>
                     <a href="#why-us" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Why Us</a>
+                    <a href="{{ route('blog.index') }}" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Blog</a>
                     <a href="#contact" class="bg-gradient-to-r from-red-600 to-orange-500 text-white px-6 py-2.5 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition duration-300">
                         Get Started
                     </a>
@@ -175,10 +176,11 @@
         <!-- Mobile Menu -->
         <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200">
             <div class="container mx-auto px-6 py-4 space-y-3">
-                <a href="#home" class="block text-gray-700 hover:text-red-600 font-medium py-2">Dashboard</a>
+                <a href="#home" class="block text-gray-700 hover:text-red-600 font-medium py-2">Home</a>
                 <a href="#services" class="block text-gray-700 hover:text-red-600 font-medium py-2">Services</a>
                 <a href="#products" class="block text-gray-700 hover:text-red-600 font-medium py-2">Products</a>
                 <a href="#why-us" class="block text-gray-700 hover:text-red-600 font-medium py-2">Why Us</a>
+                <a href="{{ route('blog.index') }}" class="block text-gray-700 hover:text-red-600 font-medium py-2">Blog</a>
                 <a href="#contact" class="block bg-gradient-to-r from-red-600 to-orange-500 text-white px-6 py-3 rounded-full font-semibold text-center">
                     Get Started
                 </a>
@@ -692,6 +694,72 @@
             </div>
         </section>
 
+        <!-- Featured Blog Posts -->
+        @if(isset($featuredBlogs) && $featuredBlogs->count() > 0)
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <!-- Section Header -->
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-5xl font-extrabold font-[Poppins] mb-4">
+                        <span class="gradient-text">Latest Blog Posts</span>
+                    </h2>
+                    <p class="text-xl text-gray-600">
+                        Stay informed with our latest insights, tips, and technology updates.
+                    </p>
+                </div>
+
+                <!-- Blog Posts Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    @foreach($featuredBlogs as $blog)
+                        <article class="bg-white rounded-3xl overflow-hidden shadow-lg hover-lift group border border-gray-100">
+                            @if($blog->featured_image)
+                                <a href="{{ route('blog.show', $blog->slug) }}">
+                                    <div class="relative overflow-hidden h-48">
+                                        <img src="{{ asset('storage/' . $blog->featured_image) }}" 
+                                             alt="{{ $blog->title }}"
+                                             class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                                    </div>
+                                </a>
+                            @endif
+                            <div class="p-6">
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    @foreach($blog->categories->take(2) as $category)
+                                        <span class="text-xs font-semibold text-red-600">
+                                            {{ $category->name }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-red-600 transition duration-300">
+                                    <a href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a>
+                                </h3>
+                                @if($blog->excerpt)
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $blog->excerpt }}</p>
+                                @else
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ Str::limit(strip_tags($blog->content), 100) }}</p>
+                                @endif
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-gray-500">{{ $blog->published_at->format('M j, Y') }}</span>
+                                    <a href="{{ route('blog.show', $blog->slug) }}" 
+                                       class="text-red-600 hover:text-red-800 font-semibold text-sm">
+                                        Read More →
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+
+                <!-- View All Button -->
+                <div class="text-center">
+                    <a href="{{ route('blog.index') }}" 
+                       class="inline-block border-2 border-black text-black px-8 py-4 rounded-full text-lg font-semibold hover:bg-black hover:text-white transition duration-300">
+                        View All Blog Posts
+                    </a>
+                </div>
+            </div>
+        </section>
+        @endif
+
         <!-- Footer -->
     <footer class="bg-black text-white py-12">
             <div class="container mx-auto px-6">
@@ -719,10 +787,11 @@
                 <div>
                     <h4 class="font-bold text-lg mb-4">Quick Links</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#home" class="hover:text-white transition duration-300">Dashboard</a></li>
+                        <li><a href="#home" class="hover:text-white transition duration-300">Home</a></li>
                         <li><a href="#services" class="hover:text-white transition duration-300">Services</a></li>
                         <li><a href="#products" class="hover:text-white transition duration-300">Products</a></li>
                         <li><a href="#why-us" class="hover:text-white transition duration-300">Why Us</a></li>
+                        <li><a href="{{ route('blog.index') }}" class="hover:text-white transition duration-300">Blog</a></li>
                         <li><a href="#contact" class="hover:text-white transition duration-300">Contact</a></li>
                     </ul>
                 </div>

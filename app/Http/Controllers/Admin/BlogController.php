@@ -12,11 +12,6 @@ use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('admin');
-    }
-
     /**
      * Display a listing of the resource.
      */
