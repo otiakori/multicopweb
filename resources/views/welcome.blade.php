@@ -154,7 +154,7 @@
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Home</a>
+                    <a href="#home" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Dashboard</a>
                     <a href="#services" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Services</a>
                     <a href="#products" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Products</a>
                     <a href="#why-us" class="text-gray-700 hover:text-red-600 font-medium transition duration-300">Why Us</a>
@@ -175,7 +175,7 @@
         <!-- Mobile Menu -->
         <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200">
             <div class="container mx-auto px-6 py-4 space-y-3">
-                <a href="#home" class="block text-gray-700 hover:text-red-600 font-medium py-2">Home</a>
+                <a href="#home" class="block text-gray-700 hover:text-red-600 font-medium py-2">Dashboard</a>
                 <a href="#services" class="block text-gray-700 hover:text-red-600 font-medium py-2">Services</a>
                 <a href="#products" class="block text-gray-700 hover:text-red-600 font-medium py-2">Products</a>
                 <a href="#why-us" class="block text-gray-700 hover:text-red-600 font-medium py-2">Why Us</a>
@@ -719,7 +719,7 @@
                 <div>
                     <h4 class="font-bold text-lg mb-4">Quick Links</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li><a href="#home" class="hover:text-white transition duration-300">Home</a></li>
+                        <li><a href="#home" class="hover:text-white transition duration-300">Dashboard</a></li>
                         <li><a href="#services" class="hover:text-white transition duration-300">Services</a></li>
                         <li><a href="#products" class="hover:text-white transition duration-300">Products</a></li>
                         <li><a href="#why-us" class="hover:text-white transition duration-300">Why Us</a></li>
