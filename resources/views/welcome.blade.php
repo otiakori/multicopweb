@@ -87,8 +87,33 @@
             animation: slideInRight 0.8s ease-out forwards;
         }
 
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .animate-slideInLeft {
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+
+        .animate-slideInRight {
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+
         .animate-float {
             animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-spin-slow {
+            animation: spin-slow 20s linear infinite;
         }
 
         .delay-100 { animation-delay: 0.1s; }
@@ -96,6 +121,7 @@
         .delay-300 { animation-delay: 0.3s; }
         .delay-400 { animation-delay: 0.4s; }
         .delay-500 { animation-delay: 0.5s; }
+        .delay-700 { animation-delay: 0.7s; }
 
         /* Gradient Text */
         .gradient-text {
@@ -139,6 +165,97 @@
         /* Smooth Scroll */
         html {
             scroll-behavior: smooth;
+        }
+
+        /* Hero Section Enhancements */
+        #home {
+            position: relative;
+            isolation: isolate;
+        }
+
+        /* Ensure content stays above background */
+        #home .container {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Glow effect for floating elements */
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.3), 0 0 40px rgba(234, 88, 12, 0.2);
+        }
+
+        /* Subtle animation for background elements */
+        @media (prefers-reduced-motion: no-preference) {
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+        }
+
+        /* Performance optimization - GPU acceleration */
+        #home > div[class*="absolute"] {
+            will-change: transform;
+            transform: translateZ(0);
+        }
+
+        /* Enhanced Background Effects */
+        #home::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(220, 38, 38, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(234, 88, 12, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Smooth gradient transitions */
+        @keyframes gradient-move {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+
+        /* Enhanced floating animation */
+        @keyframes float-enhanced {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px);
+            }
+            25% {
+                transform: translateY(-30px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-20px) translateX(-15px);
+            }
+            75% {
+                transform: translateY(-40px) translateX(10px);
+            }
+        }
+
+        /* Gradient Blob Styles */
+        .gradient-blob-1 {
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.15) 0%, rgba(234, 88, 12, 0.1) 50%, transparent 70%);
+            filter: blur(100px);
+            animation: float-enhanced 15s ease-in-out infinite;
+        }
+
+        .gradient-blob-2 {
+            background: radial-gradient(circle, rgba(234, 88, 12, 0.15) 0%, rgba(220, 38, 38, 0.1) 50%, transparent 70%);
+            filter: blur(100px);
+            animation: float-enhanced 18s ease-in-out infinite 2s;
+        }
+
+        .gradient-blob-3 {
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.12) 0%, transparent 60%);
+            filter: blur(120px);
+            animation: float-enhanced 20s ease-in-out infinite 4s;
         }
     </style>
 </head>
@@ -189,10 +306,73 @@
     </nav>
 
         <!-- Hero Section -->
-    <section id="home" class="relative pt-32 pb-20 md:pt-40 md:pb-32 bg-gradient-to-br from-white via-gray-50 to-white overflow-hidden">
-        <!-- Background Decorative Elements -->
-        <div class="absolute top-20 right-10 w-72 h-72 bg-red-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float"></div>
-        <div class="absolute bottom-20 left-10 w-72 h-72 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float delay-200"></div>
+    <section id="home" class="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden" style="background: linear-gradient(135deg, #ffffff 0%, #fef2f2 25%, #fff7ed 50%, #fef2f2 75%, #ffffff 100%);">
+        <!-- Premium Mesh Gradient Background -->
+        <div class="absolute inset-0 overflow-hidden">
+            <!-- Large Gradient Blobs -->
+            <div class="gradient-blob-1 absolute -top-40 -right-40 w-[800px] h-[800px] rounded-full"></div>
+            <div class="gradient-blob-2 absolute -bottom-40 -left-40 w-[700px] h-[700px] rounded-full"></div>
+            <div class="gradient-blob-3 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"></div>
+        </div>
+
+        <!-- Subtle Grid Pattern -->
+        <div class="absolute inset-0 opacity-[0.04]" style="background-image: 
+            linear-gradient(to right, rgba(220, 38, 38, 0.3) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(220, 38, 38, 0.3) 1px, transparent 1px);
+            background-size: 60px 60px;
+            background-position: 0 0, 0 0;"></div>
+
+        <!-- Diagonal Accent Lines -->
+        <div class="absolute inset-0 overflow-hidden opacity-30">
+            <div class="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-red-300/20 to-transparent transform rotate-12"></div>
+            <div class="absolute top-0 right-1/3 w-px h-full bg-gradient-to-b from-transparent via-orange-300/20 to-transparent transform -rotate-12"></div>
+        </div>
+
+        <!-- Floating Abstract Shapes -->
+        <div class="absolute top-20 right-20 w-32 h-32 opacity-8">
+            <svg viewBox="0 0 200 200" class="w-full h-full animate-spin-slow">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#dc2626;stop-opacity:0.3" />
+                        <stop offset="100%" style="stop-color:#ea580c;stop-opacity:0.3" />
+                    </linearGradient>
+                </defs>
+                <circle cx="100" cy="100" r="80" fill="none" stroke="url(#grad1)" stroke-width="2" stroke-dasharray="15 10"/>
+                <circle cx="100" cy="100" r="50" fill="none" stroke="url(#grad1)" stroke-width="1.5" stroke-dasharray="8 5"/>
+            </svg>
+        </div>
+
+        <div class="absolute bottom-32 left-24 w-40 h-40 opacity-8">
+            <svg viewBox="0 0 200 200" class="w-full h-full animate-pulse">
+                <defs>
+                    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ea580c;stop-opacity:0.4" />
+                        <stop offset="100%" style="stop-color:#dc2626;stop-opacity:0.4" />
+                    </linearGradient>
+                </defs>
+                <polygon points="100,20 180,180 20,180" fill="url(#grad2)" opacity="0.2"/>
+                <polygon points="100,60 140,140 60,140" fill="url(#grad2)" opacity="0.3"/>
+            </svg>
+        </div>
+
+        <!-- Subtle Dot Pattern -->
+        <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle, rgba(220, 38, 38, 0.4) 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+        <!-- Light Rays Effect -->
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-full opacity-20">
+            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-red-200/30 to-transparent" style="filter: blur(2px);"></div>
+        </div>
+
+        <!-- Corner Accents -->
+        <div class="absolute top-0 right-0 w-64 h-64 opacity-10">
+            <div class="absolute top-0 right-0 w-full h-full" style="background: radial-gradient(circle at top right, rgba(220, 38, 38, 0.2) 0%, transparent 70%);"></div>
+        </div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 opacity-10">
+            <div class="absolute bottom-0 left-0 w-full h-full" style="background: radial-gradient(circle at bottom left, rgba(234, 88, 12, 0.2) 0%, transparent 70%);"></div>
+        </div>
+
+        <!-- Subtle Noise Texture -->
+        <div class="absolute inset-0 opacity-[0.015] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E'); background-size: 200px 200px;"></div>
         
         <div class="container mx-auto px-6 relative z-10">
             <div class="grid md:grid-cols-2 gap-12 items-center">
